@@ -4,8 +4,8 @@ CWE_JSON=$(shell echo $(CWE) | sed -E 's/^|$$/"/g ; s/  */", "/g')
 
 ACTIVE_DIRS=$(shell jq -r '.[$(CWE_JSON)].id[]' data/cwe.json)
 
-CFG_DIR=data/$(MODE)-$(REGPACK)/cfg
-CONF_DIR=data/$(MODE)-$(REGPACK)/$(BLOCK_LEN)-$(MAX_PATH_LEN)-$(MAX_SUCCESSORS)
+CFG_DIR=data/$(REGPACK)/cfg
+CONF_DIR=data/$(REGPACK)/m$(MERGE_BY)bl$(BLOCK_LEN)pl$(MAX_PATH_LEN)s$(MAX_SUCCESSORS)
 PATHS_FNAME=paths-$(CONF_DESC).npz
 
 # Reasonable default is to restart with parallelism until you reach memory-intensive targets
@@ -46,17 +46,18 @@ data/bin/%/good: data/bin/%/bad
 
 $(CFG_DIR)/%.pickle.gz: data/bin/%/good data/bin/%/bad
 	mkdir -p "$(@D)"
-	./cfg.py --good "data/bin/$*/good" --bad "data/bin/$*/bad" --out "$@" --mode "$(MODE)" --registers "$(REGPACK)"
+	./cfg.py --good "data/bin/$*/good" --bad "data/bin/$*/bad" --out "$@" --registers "$(REGPACK)"
 
 $(CONF_DIR)/path/%.npz: $(CFG_DIR)/%.pickle.gz
 	mkdir -p "$(@D)"
 	./paths.py --inp $^ --out $@ \
 				--max-path-len "$(MAX_PATH_LEN)" \
+				--merge-by "$(MERGE_BY)" \
 				--block-len "$(BLOCK_LEN)" \
 				--max-successors "$(MAX_SUCCESSORS)"
 
 $(CONF_DIR)/config.json:
-	printf '{ "REGPACK" : "$(REGPACK)", "MODE":"$(MODE)", "BLOCK_LEN":$(BLOCK_LEN), "MAX_PATH_LEN":$(MAX_PATH_LEN), "MAX_SUCCESSORS":$(MAX_SUCCESSORS)}' \
+	printf '{ "REGPACK" : "$(REGPACK)", "MERGE_BY":"$(MERGE_BY)", "BLOCK_LEN":$(BLOCK_LEN), "MAX_PATH_LEN":$(MAX_PATH_LEN), "MAX_SUCCESSORS":$(MAX_SUCCESSORS) }' \
 		> $@
 
 .PHONY: dependencies cfgs paths models config clean clean-binaries clean-cfgs clean-paths clean-models

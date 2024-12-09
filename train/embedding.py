@@ -214,28 +214,6 @@ class InsEmbedding:
         else:
             assert False, f'Invalid node: {node}'
 
-class BlockEmbedding:
-    @typechecked
-    def __init__(self, regs:Registers):
-        self.ins = InsEmbedding(regs)
-
-    @typechecked
-    def size(self) -> int:
-        return self.ins.size()
-
-    @typechecked
-    def block(self, node) -> bytes:
-        if node.block:
-            res = bytearray(self.size())
-            for vec in self.ins.block(node.block.disassembly.insns):
-                for i in range(len(res)):
-                    res[i] = max(res[i], vec[i])
-            return bytes(res)
-        elif node.name is not None:
-            return self.ins.fun(node.name)
-        else:
-            assert False, f'Invalid node: {node}'
-
 @typechecked
 def disasm_graph(out_graph:nx.DiGraph, graph:nx.DiGraph, emb) -> set[tuple]:
     '''

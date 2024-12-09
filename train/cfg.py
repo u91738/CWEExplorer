@@ -6,12 +6,11 @@ import pickle
 import angr
 import networkx as nx
 
-from embedding import Registers, RegistersPacking, RegisterCategory, BlockEmbedding, InsEmbedding, disasm_graph
+from embedding import Registers, RegistersPacking, RegisterCategory, InsEmbedding, disasm_graph
 
 ap = argparse.ArgumentParser('cfg.py', description='Get control flow graph from a binary')   
 ap.add_argument('--good', help='good binary file to analyze')
 ap.add_argument('--bad', help='bad binary file to analyze')
-ap.add_argument('--mode', choices=('instruction', 'block'), required=True, help='vector per instruction or per block')
 ap.add_argument('--registers', choices=('minimal', 'subregisters', 'all'), default=False)
 ap.add_argument('--print-instr-size', default=False, action='store_true')
 ap.add_argument('--out', help='output gzip file')
@@ -32,8 +31,7 @@ match args.registers:
     case _:
         pack = RegistersPacking.COMPACT
 
-regs = Registers(good_proj.arch, pack)
-emb = BlockEmbedding(regs) if args.mode == 'block' else InsEmbedding(regs)
+emb = InsEmbedding(Registers(good_proj.arch, pack))
 
 if args.print_instr_size:
     print(emb.size())
