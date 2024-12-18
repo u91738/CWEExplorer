@@ -11,7 +11,7 @@ JOBS=15
 
 # Evaluate control flow graph in fragments of N basic blocks (instruction sequence without branching)
 # increasing MAX_PATH_LEN can exponentially increase memory requirements
-MAX_PATH_LEN=5
+MAX_PATH_LEN=6
 
 # Ignore control flow graph nodes with more than N successors
 # Sometimes CFG has nodes leading to a ton of places, probably indirect calls
@@ -24,10 +24,10 @@ CWE=CWE-121 CWE-122
 
 # Merge N instructions into one embedding
 # i.e. with MERGE_BY=2 "POP RAX; POP RBX" will be represented as one instruction that writes RAX and RBX
-MERGE_BY=2
+MERGE_BY=1
 
 # In use first N instructions of each basic block (Applied after MERGE_BY)
-BLOCK_LEN=10
+BLOCK_LEN=20
 
 # Registers packing mode, one of
 # minimal - only major registers have their own feature

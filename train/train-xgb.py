@@ -27,7 +27,6 @@ test = Dataset(path.join(args.inp, 'test-x.mmap'), path.join(args.inp, 'test-y.m
 y_avg = sum(train.iy) / len(train.iy)
 print('Data', train.x.shape, train.y.shape)
 print('Yavg:', y_avg)
-# print('weight', compute_sample_weight("balanced", train.iy)
 
 print('To DMatrix')
 dtrain = xgb.QuantileDMatrix(train.x, label=train.iy)
@@ -36,16 +35,15 @@ dtest = xgb.QuantileDMatrix(test.x, label=test.iy)
 print('Training')
 evallist = [(dtrain, 'train'), (dtest, 'eval')]
 param = {
-    'max_depth': 40,
+    'max_depth': 8,
     'eta': 0.01,
-    'learning_rate':0.05,
+    'learning_rate': 0.1,
     'objective': 'binary:logistic',
     'device' : 'cuda',
-    'scale_pos_weight': y_avg / 2,
     'eval_metric': ['error'],
 }
 
-model = xgb.train(param, dtrain, 100, evals=evallist)
+model = xgb.train(param, dtrain, 1000, evals=evallist)
 
 test_predf = model.predict(dtest)
 
