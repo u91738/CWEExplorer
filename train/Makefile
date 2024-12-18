@@ -4,9 +4,10 @@ CWE_JSON=$(shell echo $(CWE) | sed -E 's/^|$$/"/g ; s/  */", "/g')
 
 ACTIVE_DIRS=$(shell jq -r '.[$(CWE_JSON)].id[]' data/cwe.json)
 
-CFG_DIR=data/$(REGPACK)/cfg
-CONF_DIR=data/$(REGPACK)/m$(MERGE_BY)bl$(BLOCK_LEN)pl$(MAX_PATH_LEN)s$(MAX_SUCCESSORS)
+CFG_DIR=data/$(CONF_NAME)/$(REGPACK)/cfg
+CONF_DIR=data/$(CONF_NAME)/$(REGPACK)/m$(MERGE_BY)bl$(BLOCK_LEN)pl$(MAX_PATH_LEN)s$(MAX_SUCCESSORS)
 PATHS_FNAME=paths-$(CONF_DESC).npz
+BIN=data/$(CONF_NAME)/bin
 
 # Reasonable default is to restart with parallelism until you reach memory-intensive targets
 # Preserve intermediate files by specifying intermediate targets explicitly
@@ -14,7 +15,7 @@ all:
 	make -j$(JOBS) cfgs paths
 	make datasets models config
 
-binaries: $(patsubst %,data/bin/%/good,$(ACTIVE_DIRS)) $(patsubst %,data/bin/%/bad,$(ACTIVE_DIRS))
+binaries: $(patsubst %,$(BIN)/%/good,$(ACTIVE_DIRS)) $(patsubst %,$(BIN)/%/bad,$(ACTIVE_DIRS))
 cfgs: $(patsubst %,$(CFG_DIR)/%.pickle.gz,$(ACTIVE_DIRS))
 
 PATHS=$(patsubst %,$(CONF_DIR)/path/%.npz,$(ACTIVE_DIRS))
@@ -34,19 +35,19 @@ $(CONF_DIR)/model/%.ubj: $(CONF_DIR)/ds/%/train-x.mmap
 	mkdir -p "$(@D)"
 	./train-xgb.py --inp "$(<D)" --out "$@"
 
-data/bin/%/bad:
+$(BIN)/%/bad:
 	mkdir -p "$(@D)"
 	CFLAGS="-DOMITGOOD $(CFLAGS)" make -C "data/juliet/$*" clean build
-	find "data/juliet/$*/build" -mindepth 1 -type f -executable -exec mv {} "data/bin/$*/bad" \;
+	find "data/juliet/$*/build" -mindepth 1 -type f -executable -exec mv {} "$(BIN)/$*/bad" \;
 
-data/bin/%/good: data/bin/%/bad
+$(BIN)/%/good: $(BIN)/%/bad
 	mkdir -p "$(@D)"
 	CFLAGS="-DOMITBAD $(CFLAGS)" make -C "data/juliet/$*" clean build
-	find "data/juliet/$*/build" -mindepth 1 -type f -executable -exec mv {} "data/bin/$*/good" \;
+	find "data/juliet/$*/build" -mindepth 1 -type f -executable -exec mv {} "$(BIN)/$*/good" \;
 
-$(CFG_DIR)/%.pickle.gz: data/bin/%/good data/bin/%/bad
+$(CFG_DIR)/%.pickle.gz: $(BIN)/%/good $(BIN)/%/bad
 	mkdir -p "$(@D)"
-	./cfg.py --good "data/bin/$*/good" --bad "data/bin/$*/bad" --out "$@" --registers "$(REGPACK)"
+	./cfg.py --good "$(BIN)/$*/good" --bad "$(BIN)/$*/bad" --out "$@" --registers "$(REGPACK)"
 
 $(CONF_DIR)/path/%.npz: $(CFG_DIR)/%.pickle.gz
 	mkdir -p "$(@D)"
@@ -63,8 +64,8 @@ $(CONF_DIR)/config.json:
 .PHONY: dependencies cfgs paths models config clean clean-binaries clean-cfgs clean-paths clean-models
 
 clean-binaries:
-	rm -f data/bin/*/good
-	rm -f data/bin/*/bad
+	rm -f $(BIN)/*/good
+	rm -f $(BIN)/*/bad
 
 clean-cfgs:
 	rm -f ./$(CFG_DIR)/*

@@ -1,6 +1,7 @@
 # Compiler flags
 # Try to train the model with the same flags and compiler as your targets
 # original dataset doesn't use CXXFLAGS variables, so you will have to deal with CFLAGS applied to C++
+CONF_NAME?=amd64-gcc
 CC?=gcc
 CXX?=g++
 CFLAGS?=-g -O2
