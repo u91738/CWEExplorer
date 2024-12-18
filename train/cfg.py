@@ -6,7 +6,7 @@ import pickle
 import angr
 import networkx as nx
 
-from embedding import Registers, RegistersPacking, RegisterCategory, InsEmbedding, disasm_graph
+from embedding import Registers, RegistersPacking, InsEmbedding, disasm_graph
 
 ap = argparse.ArgumentParser('cfg.py', description='Get control flow graph from a binary')   
 ap.add_argument('--good', help='good binary file to analyze')

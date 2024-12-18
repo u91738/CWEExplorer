@@ -4,8 +4,8 @@ import xgboost as xgb
 import os
 from os import path
 import argparse
-from sklearn.metrics import f1_score,precision_score,recall_score,mean_squared_error,classification_report
-from sklearn.utils import compute_sample_weight
+from sklearn.metrics import classification_report
+
 ap = argparse.ArgumentParser(
     description='train xgboost model')
 ap.add_argument('--inp', required=True, help='input directory')

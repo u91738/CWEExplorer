@@ -16,6 +16,7 @@ mkdir -p data/juliet data/bin
 
 if [ ! -f data/juliet.zip ]
 then
+    echo Download dataset
     wget -O data/juliet.zip https://samate.nist.gov/SARD/downloads/test-suites/2022-08-11-juliet-c-cplusplus-v1-3-1-with-extra-support.zip
 fi
 
