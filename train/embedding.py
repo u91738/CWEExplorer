@@ -215,7 +215,7 @@ class InsEmbedding:
             assert False, f'Invalid node: {node}'
 
 @typechecked
-def disasm_graph(out_graph:nx.DiGraph, graph:nx.DiGraph, emb) -> set[tuple]:
+def disasm_graph(out_graph:nx.DiGraph, graph:nx.DiGraph, emb:InsEmbedding) -> set[tuple]:
     '''
     Add numeric edges to out_graph with embedding attached
     based on graph - CFG from angr

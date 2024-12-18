@@ -58,10 +58,10 @@ $(CONF_DIR)/path/%.npz: $(CFG_DIR)/%.pickle.gz
 				--max-successors "$(MAX_SUCCESSORS)"
 
 $(CONF_DIR)/config.json:
-	printf '{ "REGPACK" : "$(REGPACK)", "MERGE_BY":"$(MERGE_BY)", "BLOCK_LEN":$(BLOCK_LEN), "MAX_PATH_LEN":$(MAX_PATH_LEN), "MAX_SUCCESSORS":$(MAX_SUCCESSORS) }' \
+	printf '{ "REGPACK" : "$(REGPACK)", "MERGE_BY":$(MERGE_BY), "BLOCK_LEN":$(BLOCK_LEN), "MAX_PATH_LEN":$(MAX_PATH_LEN), "MAX_SUCCESSORS":$(MAX_SUCCESSORS) }' \
 		> $@
 
-.PHONY: dependencies cfgs paths models config clean clean-binaries clean-cfgs clean-paths clean-models
+.PHONY: dependencies cfgs paths models config clean clean-binaries clean-cfgs clean-paths clean-models clean-config
 
 clean-binaries:
 	rm -f $(BIN)/*/good
@@ -79,4 +79,7 @@ clean-models:
 clean-datasets:
 	rm -fr ./$(CONF_DIR)/ds/*
 
-clean: clean-binaries clean-cfgs clean-paths clean-models clean-datasets
+clean-config:
+	rm -f $(CONF_DIR)/config.json
+
+clean: clean-binaries clean-cfgs clean-paths clean-models clean-datasets clean-config
