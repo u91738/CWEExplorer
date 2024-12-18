@@ -46,7 +46,7 @@ def expand_training_paths(
 
     for i in expand_paths(graph, queue, max_path_len, max_successors, filter_edge):
         res.add(disasm_path(graph, i, merge_by, block_len) + bytes([edge_kind.value]))
-    
+
     return res
 
 

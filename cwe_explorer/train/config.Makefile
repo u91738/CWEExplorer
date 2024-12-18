@@ -20,7 +20,8 @@ MAX_SUCCESSORS=8
 
 # Active CWEs
 # Run ./cwe/stats.py to see what CWEs are in dataset, how many samples and brief description
-CWE=CWE-121 CWE-122
+CWE=CWE-121
+#CWE-122
 
 # Merge N instructions into one embedding
 # i.e. with MERGE_BY=2 "POP RAX; POP RBX" will be represented as one instruction that writes RAX and RBX

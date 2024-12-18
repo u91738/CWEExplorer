@@ -20,7 +20,7 @@ class Dataset:
         self.x = np.memmap(x, dtype=np.uint8, shape=(y_size, x_size // y_size))
         self.y = np.memmap(y, dtype=np.uint8, shape=(y_size,))
         self.iy = self.y
-        
+
 train = Dataset(path.join(args.inp, 'train-x.mmap'), path.join(args.inp, 'train-y.mmap'))
 test = Dataset(path.join(args.inp, 'test-x.mmap'), path.join(args.inp, 'test-y.mmap'))
 

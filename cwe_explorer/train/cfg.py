@@ -8,7 +8,7 @@ import networkx as nx
 
 from embedding import Registers, RegistersPacking, InsEmbedding, disasm_graph
 
-ap = argparse.ArgumentParser('cfg.py', description='Get control flow graph from a binary')   
+ap = argparse.ArgumentParser('cfg.py', description='Get control flow graph from a binary')
 ap.add_argument('--good', help='good binary file to analyze')
 ap.add_argument('--bad', help='bad binary file to analyze')
 ap.add_argument('--registers', choices=('minimal', 'subregisters', 'all'), default=False)
@@ -41,7 +41,7 @@ else:
     bad_da_edges = disasm_graph(res, bad_cfg.graph, emb)
 
     for a,b in res.edges:
-        de = res.nodes[a]['disasm'], res.nodes[b]['disasm']   
+        de = res.nodes[a]['disasm'], res.nodes[b]['disasm']
         if de in good_da_edges and de not in bad_da_edges:
             res.get_edge_data(a,b)['good'] = True
         if de not in good_da_edges and de in bad_da_edges:
